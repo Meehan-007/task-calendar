@@ -1,4 +1,29 @@
-export default function Home() {
+"use client";
+
+import React, { useState } from 'react';
+
+export default function Home() { 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTitle('');
+    setDescription('');
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle the form submission here (e.g., save to state, send to API, etc.)
+    console.log('New task:', { title, description });
+    closeModal();
+  }
+
   return (
     <div className="min-h-screen bg-[#1e1b4b] p-4">
       <div className="grid grid-cols-7 gap-4 h-[calc(100vh-2rem)]">
@@ -32,11 +57,60 @@ export default function Home() {
         </svg>
       </button>
       
-      <button className="fixed bottom-6 right-6 p-4 bg-[#67e8f9] rounded-xl text-white hover:bg-[#22d3ee] transition-colors">
+      <button className="fixed bottom-6 right-6 p-4 bg-[#67e8f9] rounded-xl text-white hover:bg-[#22d3ee] transition-colors" onClick={showModal}>
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
         </svg>
       </button>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg w-full max-w-md overflow-hidden">
+            <div className="p-4 bg-[#4254c5] text-white">
+              <h3 className="text-lg font-medium">Add New Task</h3>
+            </div>
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4254c5] focus:ring-[#4254c5] p-2 border"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4254c5] focus:ring-[#4254c5] p-2 border"
+                />
+              </div>
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#4254c5] text-white rounded-md hover:bg-[#3245b6]"
+                >
+                  Add Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
