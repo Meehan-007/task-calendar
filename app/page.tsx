@@ -2,10 +2,18 @@
 
 import React, { useState } from 'react';
 
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  day: string;
+}
+
 export default function Home() { 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -17,10 +25,19 @@ export default function Home() {
     setDescription('');
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle the form submission here (e.g., save to state, send to API, etc.)
-    console.log('New task:', { title, description });
+    // Create a new task as a post-it note
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title,
+      description,
+      day: "Wednesday" // Default to Wednesday
+    };
+    
+    // Add the task to our tasks array
+    setTasks([...tasks, newTask]);
+    console.log('New task:', newTask);
     closeModal();
   }
 
@@ -45,9 +62,20 @@ export default function Home() {
                   style={{ top: `${(i + 1) * (100 / 24)}%` }}
                 />
               ))}
+              
+              {/* Post-it notes */}
+              {tasks.filter(task => task.day === day).map((task) => (
+                <div 
+                  key={task.id}
+                  className="absolute p-2 bg-yellow-200 rounded shadow-md w-[90%] left-[5%] top-[10%] z-10"
+                  style={{ minHeight: '80px' }}
+                >
+                  <h3 className="font-bold text-gray-800 text-sm truncate">{task.title}</h3>
+                  <p className="text-xs text-gray-700 overflow-hidden line-clamp-3">{task.description}</p>
+                </div>
+              ))}
             </div>
           </div>
-           
         ))}
       </div>
 
